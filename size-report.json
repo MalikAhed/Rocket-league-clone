@@ -1,0 +1,8 @@
+{
+  "originalViewerBytes": 306785102,
+  "compactRuntimeBytes": 37144095,
+  "reductionPercent": 87.89,
+  "packFiles": 18,
+  "runtimeFiles": 367,
+  "notes": "Most textures capped at 256px; selected pitch/net/flag textures at 512px. All three bot models included."
+}

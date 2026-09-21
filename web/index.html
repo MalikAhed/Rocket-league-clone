@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Beckwith Park Lightweight</title>
+  <meta name="description" content="Interactive flat-field viewer for Beckwith Park's daytime low-performance appearance.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23101b14'/%3E%3Cpath d='M8 16h48v32H8z' fill='%233e8c45' stroke='%23e6f4dc' stroke-width='3'/%3E%3Cpath d='M32 16v32M8 32h48' stroke='%23e6f4dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='8' fill='none' stroke='%23e6f4dc' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./game-menu.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body class="game-shell">
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">DAYTIME · ARENA INTERIOR</p>
+        <h1>Beckwith Park</h1>
+      </div>
+      <div class="actions"><button id="play" type="button" disabled>Loading car…</button><button id="controls-open" type="button">Controls</button><button id="camera-open" type="button">Camera</button><button id="free" type="button">Move inside</button><button id="reference-view" type="button">Reference corner</button><button id="reset" type="button">Reset view</button><button id="fullscreen" type="button">Fullscreen</button></div>
+    </header>
+    <section id="viewport" aria-label="Interactive 3D field viewer">
+      <canvas id="scene" tabindex="0" aria-label="Arena camera"></canvas>
+      <section id="game-menu" aria-label="Game menu">
+        <div class="menu-shade"></div>
+        <div class="menu-panel" data-panel="home">
+          <p class="menu-kicker">ROCKET SOCCER</p><h1 class="menu-title">LET’S PLAY.</h1>
+          <nav class="main-navigation" aria-label="Main menu">
+            <button data-menu="play">PLAY</button><button data-menu="garage">GARAGE</button><button data-menu="quit">QUIT</button>
+          </nav>
+        </div>
+        <div class="menu-panel" data-panel="play" hidden>
+          <p class="menu-kicker">PLAY</p><h2 class="menu-title">CHOOSE A MODE</h2>
+          <div class="mode-options"><button data-start="freeplay"><strong>FREE PLAY</strong><span>Training · Unlimited boost</span></button><button data-menu="offline"><strong>OFFLINE PLAY</strong><span>Exhibition · 1v1 against a bot</span></button></div>
+          <button class="menu-back" data-menu="home">BACK</button>
+        </div>
+        <div class="menu-panel" data-panel="offline" hidden>
+          <p class="menu-kicker">PLAY / OFFLINE</p><h2 class="menu-title">EXHIBITION</h2>
+          <p class="menu-label">CHOOSE YOUR OPPONENT</p><div id="bot-options" class="bot-options" role="group" aria-label="Bot opponent">
+            <button data-bot="seer" aria-pressed="false"><strong>SEER v0</strong><span>Platinum</span></button><button data-bot="necto" aria-pressed="false"><strong>NECTO</strong><span>Diamond</span></button><button data-bot="nexto" aria-pressed="true"><strong>NEXTO</strong><span>Grand Champion</span></button>
+          </div>
+          <p class="match-rules">BECKWITH PARK · 1v1 · 5 MINUTES</p>
+          <button class="menu-primary" data-start="offline">CREATE MATCH</button><button class="menu-back" data-menu="play">BACK</button>
+        </div>
+        <div class="menu-panel garage-panel" data-panel="garage" hidden>
+          <p class="menu-kicker">GARAGE</p><h2 class="menu-title">CUSTOMIZE CAR</h2><p class="car-name">FENNEC</p>
+          <div class="garage-tabs" role="group" aria-label="Paint team"><button data-paint-team="blue" aria-pressed="true">BLUE TEAM</button><button data-paint-team="orange" aria-pressed="false">ORANGE TEAM</button></div>
+          <label class="paint-label">PRIMARY COLOR<input type="color" id="garage-primary" aria-label="Primary paint color" value="#1358bd"></label>
+          <div class="paint-swatches" id="paint-swatches" role="group" aria-label="Primary paint presets"></div>
+          <label class="paint-label">ACCENT COLOR<input type="color" id="garage-accent" aria-label="Accent paint color" value="#151a20"></label>
+          <label class="paint-label">PAINT FINISH<select id="garage-finish"><option value="gloss">Glossy</option><option value="matte">Matte</option></select></label>
+          <div class="equipped-items"><span>WHEELS<strong>OEM</strong></span><span>BOOST<strong>GOLD RUSH</strong></span><span>TRAIL<strong>CLASSIC</strong></span></div>
+          <button class="menu-back" data-menu="home">BACK</button>
+        </div>
+        <div class="menu-panel" data-panel="pause" hidden><p class="menu-kicker">PAUSED</p><h2 class="menu-title">TAKE A BREATHER</h2><nav class="main-navigation" aria-label="Pause menu"><button data-action="resume">RESUME GAME</button><button data-action="restart">RESTART</button><button data-action="leave">MAIN MENU</button></nav></div>
+        <div class="menu-panel" data-panel="results" hidden><p class="menu-kicker">MATCH COMPLETE</p><h2 id="match-winner" class="menu-title">BLUE WINS</h2><p id="final-score" class="final-score"></p><button class="menu-primary" data-action="restart">PLAY AGAIN</button><button class="menu-back" data-action="leave">MAIN MENU</button></div>
+        <div class="menu-panel" data-panel="quit" hidden><p class="menu-kicker">ROCKET SOCCER</p><h2 class="menu-title">GAME CLOSED</h2><button class="menu-primary" data-menu="home">RETURN TO MENU</button></div>
+        <p id="menu-message" class="menu-message" role="status" aria-live="polite">Loading arena…</p><div class="menu-bottom"><span id="menu-footer-hint">↑ ↓ SELECT · ENTER CONFIRM · ESC BACK</span><span>BECKWITH PARK</span></div>
+      </section>
+      <div id="match-scoreboard" hidden aria-label="Match score"><span id="score-blue">0</span><span id="match-clock">5:00</span><span id="score-orange">0</span></div>
+      <div id="match-announcement" hidden role="status"></div>
+      <div id="boost-gauge" hidden><strong id="boost-number">100</strong><span>BOOST</span></div>
+      <button id="pause-game" hidden aria-label="Pause game">Ⅱ</button>
+      <p id="freeplay-caption" hidden>FREE PLAY</p>
+      <div id="quality-control">
+        <div class="quality-setting"><label for="quality-preset">Quality</label><select id="quality-preset" disabled><option value="realistic">Realistic</option><option value="balanced">Balanced</option><option value="low">Low</option></select></div>
+        <div class="quality-setting"><label for="render-scale">Render scale</label><select id="render-scale"><option value=".4">40%</option><option value=".6" selected>60%</option><option value=".8">80%</option><option value=".85">85%</option><option value="1">100%</option></select></div>
+        <p id="quality-description">Original geometry and full material detail.</p>
+      </div>
+      <div class="hint">Drag to orbit · Scroll to zoom · Right-drag to pan</div>
+      <div id="status">Loading field…</div>
+      <div id="play-hud" hidden></div>
+      <details id="freeplay-tools"><summary>Free play</summary><div class="freeplay-buttons"><button data-ball-action="takePossession">1 · Bring ball</button><button data-ball-action="startDribble">2 · Dribble setup</button><button data-ball-action="passBall">3 · Pass to car</button><button data-ball-action="launchBall">4 · Launch ball</button><button id="freeplay-kickoff">5 · Reset kickoff</button></div><p id="freeplay-status" role="status">Buttons, keys 1–5, or mapped controller actions.</p></details>
+
+    </section>
+    <footer>
+      <span>Original arena geometry</span>
+      <span>Goals · Walls · Cage · Boost pads</span>
+      <span>Material shading approximated</span>
+    </footer>
+  </main>
+      <dialog id="camera-settings"><h2>Camera &amp; performance</h2><p>Camera loaded from your save plus verified TAGame defaults: FOV 110, distance 270, height 100, angle −5, stiffness 0.4, swivel 10, transition 1.5. Your imported camera settings are applied. Camera motion remains the browser implementation.</p>
+        <p id="controller-status" role="status">Connect controller, then press a button</p>
+        <label>Unlimited boost <input id="unlimited-boost" type="checkbox" checked></label>
+        <p id="performance-status">Low-quality rendering · physics 120 Hz</p>
+        <label>Render scheduling <select id="render-scheduling"><option value="uncapped">Uncapped</option><option value="display" selected>Display-paced</option></select></label>
+        <label>FPS cap <input id="fps-cap" type="number" min="0" max="360" step="1" value="0"></label><p>0 = no application cap. Uncapped scheduling can render between display refreshes, with at most two GPU frames pending. Render FPS counts submitted frames; GPU FPS counts completed frames, not monitor refreshes. Physics stays at 120 Hz.</p>
+        <p>Use Controls to view or change your imported gamepad and keyboard bindings. Camera changes save automatically.</p>
+        <label>Camera shake <input name="shake" type="checkbox"></label><label>Invert swivel pitch <input name="invertSwivel" type="checkbox"></label><label>Toggle ball camera <input name="toggleBallCam" type="checkbox"></label><label>Start with ball camera <input name="ballCam" type="checkbox"></label><label>Show car hitbox <input id="show-hitbox" type="checkbox"></label><label>FOV <input name="fov" type="number" min="60" max="110" step="1"></label>
+        <label>Distance <input name="distance" type="number" min="100" max="400" step="10"></label>
+        <label>Height <input name="height" type="number" min="40" max="200" step="10"></label>
+        <label>Angle <input name="angle" type="number" min="-15" max="0" step="1"></label>
+        <label>Stiffness <input name="stiffness" type="number" min="0" max="1" step=".05"></label>
+        <label>Swivel speed <input name="swivelSpeed" type="number" min="1" max="10" step=".1"></label>
+        <label>Transition speed <input name="transitionSpeed" type="number" min=".1" max="2" step=".1"></label>
+        <p>RocketSim runtime with the Octane handling family referenced by the original Fennec asset. Not the original Rocket League physics engine.</p><p>Original map and Fennec assets extracted locally. UE3 material effects and lighting translated for WebGL; not a pixel-identical renderer.</p>
+        <p>Fennec: blue paint, original trim, lens covers and OEM wheels. Alpha Boost: Gold Rush.</p><p>Original Rocket League ball with panel textures and illuminated accents.</p>
+      <div class="actions"><button id="camera-defaults">Restore imported camera</button><button id="camera-close">Done</button></div></dialog>
+  <dialog id="controls-panel"><h2>Controls</h2><p>Your Rocket League controls were imported from the local save. Changing dodge deadzone resets the car when you close this panel.</p><p id="binding-status" role="status"></p><p id="controller-live"></p><div id="binding-rows"></div><label>Controller deadzone <input id="controller-deadzone" type="number" min="0" max=".95" step=".01"></label><p>Shared buttons are allowed. Settings save automatically in this browser. Keyboard controls remain available.</p><div class="actions"><button id="controls-defaults">Restore imported settings</button><button id="controls-close">Done</button></div></dialog>
+  <script type="module" src="./exact-viewer.js?v=physics-camera-3"></script>
+</body>
+</html>

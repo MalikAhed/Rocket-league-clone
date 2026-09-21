@@ -1,0 +1,43 @@
+## Supplied scenery
+
+### a bush (painted-bush.glb)
+Author: FelisRandomis (https://sketchfab.com/FelisRandomis)
+
+Source: https://sketchfab.com/3d-models/a-bush-ce0e6028cfef4d1b82fab0d8777a8c05
+
+License: CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+Modified: 1,389 → 1,389 triangles; textures capped at 1024 pixels on the longest edge; GLB packaging; alpha-tested foliage; normalized/instanced at runtime with vertex daylight shading.
+
+### Stylized Bush (green-bush.glb)
+Author: Daniel (https://sketchfab.com/danielpetrov)
+
+Source: https://sketchfab.com/3d-models/stylized-bush-9d9ce79d3ae040619e96d5b22c7de1a6
+
+License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+Modified: 988 → 988 triangles; textures capped at 1024 pixels on the longest edge; GLB packaging; alpha-tested foliage; normalized/instanced at runtime with vertex daylight shading.
+
+### Low poly Bush (Forsythia) (forsythia.glb)
+Author: arekusandoru.kurobe (https://sketchfab.com/arekusandoru.kurobe)
+
+Source: https://sketchfab.com/3d-models/low-poly-bush-forsythia-886cd22a6faf4ab5982ef6372da7ebe1
+
+License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+Modified: 33,970 → 5,412 triangles; textures capped at 1024 pixels on the longest edge; GLB packaging; alpha-tested foliage; normalized/instanced at runtime with vertex daylight shading.
+
+### bush (dense-bush.glb)
+Author: name213478 (https://sketchfab.com/name213478)
+
+Source: https://sketchfab.com/3d-models/bush-2689132ccb5847c786e179f2d0d2452d
+
+License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+Modified: 128,970 → 10,292 triangles; textures capped at 1024 pixels on the longest edge; GLB packaging; alpha-tested foliage; normalized/instanced at runtime with vertex daylight shading.
+
+### Big Stones (stones.glb)
+Author: CR!STALLL (https://sketchfab.com/CR1STALLL)
+
+Source: https://sketchfab.com/3d-models/big-stones-f25b9fe3628f4d7195bdc3a8f2b1aff4
+
+License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+Modified: 2,106 → 2,106 triangles; textures capped at 1024 pixels on the longest edge; GLB packaging; alpha-tested foliage; normalized/instanced at runtime with vertex daylight shading.
+
+The adapted `painted-bush.glb` remains under CC-BY-SA-4.0. The other listed adapted scenery models retain CC-BY-4.0. Source attribution and transformation summaries are also embedded in the GLBs and their manifest.

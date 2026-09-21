@@ -12,7 +12,7 @@ npm start
 
 Open http://127.0.0.1:4188/. No npm install, build step, account, CDN, or internet connection is needed to play. Keep the terminal running. `PORT` and `HOST` can override the default loopback address.
 
-WASD drives, Space jumps, Shift boosts; use the in-game controls panel for the complete bindings and controller mapping. Escape pauses. Play → Free Play starts training; Play → Offline Play starts an exhibition.
+WASD drives, left mouse jumps, right mouse boosts, Shift powerslides, and Space toggles ball camera; use the in-game controls panel for the complete bindings and controller mapping. Escape pauses. Play → Free Play starts training; Play → Offline Play starts an exhibition.
 
 ## Lightweight package
 
@@ -22,7 +22,9 @@ WASD drives, Space jumps, Shift boosts; use the in-game controls panel for the c
 - Low is the default preset, at the inherited 60% render scale. Display-paced rendering avoids unnecessary frames. Physics retains its fixed 120 Hz simulation.
 - Bot models load when an offline match is requested. All three models remain included for offline operation.
 
-The `web` directory contains the editable application modules and all runtime assets. Some vendor source and data are stored as `.gz` to avoid keeping duplicate compressed and uncompressed files. The server exposes their original URL. This package requires the included server; uploading `web` directly to GitHub Pages without expanding assets and rewriting WebP references will not work.
+The `web` directory contains editable application modules. Binary assets and compressed vendor files are indexed in `packed/index.json` and stored in 18 `.pack` files. The server streams only the requested byte range; it does not load or unpack the complete archive into memory. Run `node unpack.mjs` to materialize every asset for editing. Some vendor source and data use `.gz` to avoid duplicate compressed/uncompressed copies. The server exposes their original URL. This package requires the included server; uploading `web` directly to GitHub Pages will not work.
+
+Use `?keyboardOnly` in the URL to ignore a connected controller, for example when another game is using it.
 
 ## Verify
 
@@ -39,3 +41,4 @@ This is an optimization of the existing Beckwith viewer, not the separate car-so
 Recovered shader JavaScript and editable application JavaScript are included. The native physics dependency is shipped as a verified WebAssembly binary with build metadata; the original Psyonix engine source and a reproducible native C++ build are not included. RocketSim is an independent simulation, not Rocket League's original engine. Existing rendering reconstruction limitations remain, including some net/scenery artifacts and differences from Unreal lighting.
 
 Existing third-party licenses and bot notices are preserved in `web/licenses`, `web/physics/THIRD-PARTY-NOTICES.txt`, `web/vendor`, and `web/assets/bot`.
+
