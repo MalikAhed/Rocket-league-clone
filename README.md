@@ -1,5 +1,9 @@
 # Beckwith Park Lightweight
 
+## Play online
+
+**[Launch the GitHub Pages version](https://malikahed.github.io/Rocket-league-clone/)**
+
 Playable web port of the locally extracted Beckwith Park map, with the original extracted Fennec and ball visuals, RocketSim physics, free play, controller/keyboard controls, garage paint, and Seer/Necto/Nexto offline matches.
 
 ## Run
@@ -22,7 +26,7 @@ WASD drives, left mouse jumps, right mouse boosts, Shift powerslides, and Space 
 - Low is the default preset, at the inherited 60% render scale. Display-paced rendering avoids unnecessary frames. Physics retains its fixed 120 Hz simulation.
 - Bot models load when an offline match is requested. All three models remain included for offline operation.
 
-The `web` directory contains editable application modules. Binary assets and compressed vendor files are indexed in `packed/index.json` and stored in 18 `.pack` files. The server streams only the requested byte range; it does not load or unpack the complete archive into memory. Run `node unpack.mjs` to materialize every asset for editing. Some vendor source and data use `.gz` to avoid duplicate compressed/uncompressed copies. The server exposes their original URL. This package requires the included server; uploading `web` directly to GitHub Pages will not work.
+The `web` directory contains editable application modules. Binary assets and compressed vendor files are indexed in `packed/index.json` and stored in 18 `.pack` files. The server streams only the requested byte range; it does not load or unpack the complete archive into memory. Run `node unpack.mjs` to materialize every asset for editing. Some vendor source and data use `.gz` to avoid duplicate compressed/uncompressed copies. The server exposes their original URL. For a normal local checkout, this package uses the included server. The repository's GitHub Pages workflow creates a static deployment by expanding the packed assets and materializing the server's compressed/optimized fallback URLs before publishing `web/`; simply uploading the unprocessed `web` directory would not work.
 
 Use `?keyboardOnly` in the URL to ignore a connected controller, for example when another game is using it.
 
