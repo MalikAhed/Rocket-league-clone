@@ -1,24 +1,22 @@
-name: Deploy GitHub Pages
+name: Prepare GitHub Pages snapshot
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: pages-static-snapshot
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  prepare:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,7 +33,7 @@ jobs:
       - name: Expand packed game assets
         run: node unpack.mjs
 
-      - name: Prepare static Pages files
+      - name: Prepare static files
         run: |
           node --input-type=module <<'NODE'
           import { readdir, readFile, writeFile, access } from 'node:fs/promises';
@@ -57,8 +55,8 @@ jobs:
                 continue;
               }
 
-              // The local Node server transparently exposes *.gz as the
-              // original URL. Pages is static, so materialize that URL.
+              // The local Node server exposes *.gz resources at the original
+              // uncompressed URL. Materialize those URLs for static hosting.
               if (file.endsWith('.gz')) {
                 const target = file.slice(0, -3);
                 if (!(await exists(target))) {
@@ -66,9 +64,9 @@ jobs:
                 }
               }
 
-              // The local server also serves optimized WebP bytes when the
-              // application requests the original texture path (for example
-              // texture.png -> texture.png.webp). Mirror that URL for Pages.
+              // The local server also maps requests such as texture.png to
+              // texture.png.webp. Duplicate those optimized bytes at the URL
+              // the browser already requests.
               if (file.endsWith('.webp')) {
                 const target = file.slice(0, -5);
                 if (!(await exists(target))) {
@@ -79,20 +77,24 @@ jobs:
           }
 
           await walk(root);
-          await writeFile(path.join(root, '.nojekyll'), '');
-          console.log('Prepared static GitHub Pages artifact in web/.');
+          console.log('Prepared static game files in web/.');
           NODE
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
+      - name: Publish static snapshot into main/docs
+        run: |
+          rm -rf docs
+          mkdir docs
+          cp -a web/. docs/
+          touch docs/.nojekyll
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: web
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f docs
 
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          if git diff --cached --quiet; then
+            echo "Static snapshot is already current."
+            exit 0
+          fi
+
+          git commit -m "ci: publish static Pages snapshot"
+          git push origin HEAD:main
