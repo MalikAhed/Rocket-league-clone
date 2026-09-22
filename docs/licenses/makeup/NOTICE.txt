@@ -1,0 +1,21 @@
+MakeUp Ultra Fast 9.5e — Javier Garduño — GNU LGPL version 3.
+
+The supplied OPEN_ME.html contains a WebGL adaptation of MakeUp's tone curve,
+color palettes, stochastic shadows, bloom, depth-based ambient occlusion and
+exposure. This game adapts that supplied source to the pinned Three.js engine.
+It is not the complete Minecraft shader pipeline and is not a Psyonix shader.
+
+Changes, 2026-09-13:
+- Host camera, moving model transforms, world units and shadow texture bindings.
+- Preset-dependent pass budgets and a single-sampled scene for heat refraction.
+- Live graphics editor, per-car finishes and preserved map color compensation.
+
+The editable corresponding adaptation source is shipped in:
+src/materials/reference-car-fragment.js
+src/materials/reference-scenery.js
+src/rendering/reference-post-shaders.js
+src/rendering/reference-post.js
+src/settings/reference-palettes.js
+
+The supplied original source archive is included beside this notice.
+Full licenses: ../MakeUp-LGPL-3.0.txt and ../GPL-3.0.txt.
