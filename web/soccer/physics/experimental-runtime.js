@@ -1,6 +1,6 @@
 export const ORIGINAL_CORE_SHA256 = "fbb58ef4f98227ed2e1ea15513eacc4d9dbe702748f429913a0f4fff43d7bcc8";
 export const EXPERIMENTAL_CORE_SHA256 = "078235d312ab7e444936abaa701d7d2e7dd27752d0417713ea0936980b012f4e";
-export const EXPERIMENTAL_CORE_URL = "/physics/constructor-config-v1.wasm";
+export const EXPERIMENTAL_CORE_URL = new URL("../../physics/constructor-config-v1.wasm", import.meta.url).href;
 
 export async function initializePhysics(factory, selection, {
   fetchBytes = async () => {

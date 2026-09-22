@@ -20,6 +20,7 @@
       <div class="actions"><button id="play" type="button" disabled>Loading car…</button><button id="controls-open" type="button">Controls</button><button id="camera-open" type="button">Camera</button><button id="free" type="button">Move inside</button><button id="reference-view" type="button">Reference corner</button><button id="reset" type="button">Reset view</button><button id="fullscreen" type="button">Fullscreen</button></div>
     </header>
     <section id="viewport" aria-label="Interactive 3D field viewer">
+      <button id="performance-open" type="button">Settings</button>
       <canvas id="scene" tabindex="0" aria-label="Arena camera"></canvas>
       <section id="game-menu" aria-label="Game menu">
         <div class="menu-shade"></div>
@@ -84,7 +85,7 @@
         <label>Unlimited boost <input id="unlimited-boost" type="checkbox" checked></label>
         <p id="performance-status">Low-quality rendering · physics 120 Hz</p>
         <label>Render scheduling <select id="render-scheduling"><option value="uncapped">Uncapped</option><option value="display" selected>Display-paced</option></select></label>
-        <label>FPS cap <input id="fps-cap" type="number" min="0" max="360" step="1" value="0"></label><p>0 = no application cap. Uncapped scheduling can render between display refreshes, with at most two GPU frames pending. Render FPS counts submitted frames; GPU FPS counts completed frames, not monitor refreshes. Physics stays at 120 Hz.</p>
+        <label>FPS cap <input id="fps-cap" type="number" min="0" max="1000" step="1" value="0"></label><p>0 = no application cap. Uncapped scheduling can render between display refreshes, with at most two GPU frames pending. Render FPS counts submitted frames; GPU FPS counts completed frames, not monitor refreshes. Physics stays at 120 Hz.</p>
         <p>Use Controls to view or change your imported gamepad and keyboard bindings. Camera changes save automatically.</p>
         <label>Camera shake <input name="shake" type="checkbox"></label><label>Invert swivel pitch <input name="invertSwivel" type="checkbox"></label><label>Toggle ball camera <input name="toggleBallCam" type="checkbox"></label><label>Start with ball camera <input name="ballCam" type="checkbox"></label><label>Show car hitbox <input id="show-hitbox" type="checkbox"></label><label>FOV <input name="fov" type="number" min="60" max="110" step="1"></label>
         <label>Distance <input name="distance" type="number" min="100" max="400" step="10"></label>
@@ -97,6 +98,6 @@
         <p>Fennec: blue paint, original trim, lens covers and OEM wheels. Alpha Boost: Gold Rush.</p><p>Original Rocket League ball with panel textures and illuminated accents.</p>
       <div class="actions"><button id="camera-defaults">Restore imported camera</button><button id="camera-close">Done</button></div></dialog>
   <dialog id="controls-panel"><h2>Controls</h2><p>Your Rocket League controls were imported from the local save. Changing dodge deadzone resets the car when you close this panel.</p><p id="binding-status" role="status"></p><p id="controller-live"></p><div id="binding-rows"></div><label>Controller deadzone <input id="controller-deadzone" type="number" min="0" max=".95" step=".01"></label><p>Shared buttons are allowed. Settings save automatically in this browser. Keyboard controls remain available.</p><div class="actions"><button id="controls-defaults">Restore imported settings</button><button id="controls-close">Done</button></div></dialog>
-  <script type="module" src="./exact-viewer.js?v=physics-camera-3"></script>
+  <script type="module" src="./bootstrap.js?v=pages-performance-1"></script>
 </body>
 </html>

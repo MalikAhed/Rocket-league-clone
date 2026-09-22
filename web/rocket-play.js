@@ -86,8 +86,8 @@ export async function createPlay(scene,camera,canvas){
  function ballAction(action){if(!active||userPaused||match.mode!=='freeplay')return;keyboard?.clear();goalUntil=0;match.goalTicks=0;ball.visible=true;goalEffect.reset();goalPhysics.reset();vehicleEffects.reset();boostEffect.reset();sim.controlBall(0,action);clock.sync();sync();document.querySelector('#freeplay-status').textContent={takePossession:'Ball placed ahead of the car.',startDribble:'Dribble setup ready.',passBall:'Pass sent toward your car.',launchBall:'Ball launched.'}[action];canvas.focus();}
  for(const button of document.querySelectorAll('[data-ball-action]'))button.onclick=()=>ballAction(button.dataset.ballAction);
  document.querySelector('#freeplay-kickoff').onclick=()=>{reset();canvas.focus();};
- const paused=()=>userPaused||document.querySelector('#controls-panel').open||document.querySelector('#camera-settings').open;
- for(const panel of document.querySelectorAll('#controls-panel,#camera-settings'))panel.addEventListener('close',()=>{clock.sync();canvas.focus();});
+ const paused=()=>userPaused||Boolean(document.querySelector('dialog[open]'));
+ for(const panel of document.querySelectorAll('dialog'))panel.addEventListener('close',()=>{clock.sync();canvas.focus();});
  keyboard=createKeyboardReader(canvas,{active:()=>active,paused,onAction:action=>{
   if(action==='camera'){if(settings.toggleBallCam)ballCam=!ballCam;}
   else if(action==='reset'){if(match.mode==='freeplay')reset();}

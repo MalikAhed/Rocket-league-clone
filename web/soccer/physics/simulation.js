@@ -31,13 +31,13 @@ class PhysicsSimulation {
   async init() {
     this.module = await initializeGameplayPhysics(jC, this.physicsSelection);
     const e = await (
-        await fetch("/assets/arena/collision/manifest.json")
+        await fetch(new URL("../../assets/arena/collision/manifest.json", import.meta.url))
       ).json(),
       t = await Promise.all(
         e.map(
           async (A) =>
             new Uint8Array(
-              await (await fetch(`/assets/arena/collision/${A}`)).arrayBuffer(),
+              await (await fetch(new URL(`../../assets/arena/collision/${A}`, import.meta.url))).arrayBuffer(),
             ),
         ),
       ),

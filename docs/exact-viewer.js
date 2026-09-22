@@ -1,3 +1,4 @@
+import {performanceSettings,setupPerformanceSettings} from './performance-settings.js';
 import {tierTextureURL} from './texture-tiers.js';
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
@@ -55,7 +56,7 @@ renderer.debug.onShaderError=(gl,program,vertex,fragment)=>{
  loadFailed(new Error(`Map shader failed: ${gl.getProgramInfoLog(program)} ${gl.getShaderInfoLog(vertex)} ${gl.getShaderInfoLog(fragment)}`));
 };
 const renderScaleOverride=Number(new URLSearchParams(location.search).get('scale'));
-renderer.setPixelRatio(renderScaleOverride>=.4&&renderScaleOverride<=1?renderScaleOverride:new URLSearchParams(location.search).has('reference')?.85:.6);
+renderer.setPixelRatio(renderScaleOverride>=.4&&renderScaleOverride<=1?renderScaleOverride:new URLSearchParams(location.search).has('reference')?.85:performanceSettings.scale);
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.shadowMap.enabled=false;
 renderer.setClearColor('#9eb7c9');
@@ -90,9 +91,10 @@ function resize(){
 new ResizeObserver(resize).observe(viewport);resize();reset();
 document.querySelector('#render-scale').addEventListener('change',e=>{renderer.setPixelRatio(Number(e.target.value));resize();});
 for(const option of document.querySelector('#render-scale').options)option.selected=Number(option.value)===renderer.getPixelRatio();
-let fpsCap=0,lastFrame=0;
+let fpsCap=performanceSettings.cap,lastFrame=0;
 const fpsInput=document.querySelector('#fps-cap');fpsInput.value=fpsCap;
-fpsInput.addEventListener('input',()=>{fpsCap=Math.max(0,Math.min(360,Number(fpsInput.value)||0));localStorage.setItem('beckwith.fpsCap',String(fpsCap));});
+fpsInput.addEventListener('change',()=>{fpsCap=Math.max(0,Math.min(1000,Number(fpsInput.value)||0));fpsInput.value=fpsCap;lastFrame=0;});
+fpsInput.addEventListener('input',()=>{fpsCap=Math.max(0,Math.min(1000,Number(fpsInput.value)||0));lastFrame=0;});
 document.querySelector('#fullscreen').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
 document.querySelector('#reset').addEventListener('click',()=>{
  keys.clear();dragging=false;
@@ -173,4 +175,5 @@ const renderScheduler=createRenderScheduler(renderer,()=>{
  return true;
 },loadFailed);
 document.querySelector('#render-scheduling').addEventListener('change',e=>renderScheduler.setMode(e.target.value));
+setupPerformanceSettings(renderScheduler,canvas);
 renderScheduler.start();

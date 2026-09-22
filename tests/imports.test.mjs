@@ -19,7 +19,7 @@ test('local module imports and worker entry points exist',async()=>{
   for(const ref of references){
    if(!ref.startsWith('.')&&!ref.startsWith('/'))continue;
    const target=ref.startsWith('/')?path.join(root,ref):path.resolve(path.dirname(file),ref.split('?')[0]);
-   if(ref==='.'||ref.endsWith('/')){assert(names.some(n=>n.startsWith(path.relative(root,target).split(path.sep).join('/')+'/')));continue;}
+   if(ref==='.'||ref.endsWith('/')){assert(target===path.resolve(root)||names.some(n=>n.startsWith(path.relative(root,target).split(path.sep).join('/')+'/')),`${name}: missing directory ${ref}`);continue;}
    let found=false;for(const suffix of ['','.gz','.webp'])if(storedAsset(path.relative(root,target).split(path.sep).join('/')+suffix)){found=true;break;}
    assert(found,`${path.relative(root,file)} imports missing ${ref}`);checked++;
   }

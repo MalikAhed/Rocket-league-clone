@@ -4,7 +4,7 @@ export const SOURCE_CORE_REVISION = "c2baacb8f4b441dd8505e63c2aeb5a1679b60b02";
 export const ORIGINAL_GAMEPLAY_CORE_SHA256 = "b66ba712456de771c38b587d21e31ac20cc11d94cb3876adbf81e1362ff66426";
 export async function initializeOriginalPhysics(factory, {
   fetchOriginalBytes = async () => {
-    const response = await fetch("/physics/original-launch.wasm", { cache: "no-cache" });
+    const response = await fetch(new URL("../../physics/original-launch.wasm", import.meta.url).href, { cache: "no-cache" });
     if (!response.ok) throw Error(`Original physics unavailable (HTTP ${response.status})`);
     return new Uint8Array(await response.arrayBuffer());
   },
@@ -31,11 +31,11 @@ export async function initializeGameplayPhysics(factory, selection, dependencies
 }
 export async function initializeSourcePhysics(cameraFactory, {
   fetchBytes = async () => {
-    const response = await fetch("/physics/rocketsim-profile-core.wasm", { cache: "no-cache" });
+    const response = await fetch(new URL("../../physics/rocketsim-profile-core.wasm", import.meta.url).href, { cache: "no-cache" });
     if (!response.ok) throw Error(`RocketSim physics unavailable (HTTP ${response.status})`);
     return new Uint8Array(await response.arrayBuffer());
   },
-  loadFactory = async () => (await import("/physics/rocketsim-core.js")).default,
+  loadFactory = async () => (await import(new URL("../../physics/rocketsim-core.js", import.meta.url).href)).default,
   digest = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),v=>v.toString(16).padStart(2,"0")).join(""),
 } = {}) {
   const bytes = await fetchBytes();
