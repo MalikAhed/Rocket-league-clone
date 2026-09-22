@@ -3,7 +3,7 @@ import {tierTextureURL} from './texture-tiers.js';
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { addArena } from './arena.js';
-import { createPlay } from './rocket-play.js?v=map-only-1';
+import { createPlay } from './rocket-play.js?v=pages-performance-2';
 import {setupBindings} from './bindings.js';
 import {addScenery} from './scenery.js';
 import {originalGround} from './recovered-ground.js';
