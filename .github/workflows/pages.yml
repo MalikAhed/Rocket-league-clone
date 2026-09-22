@@ -1,0 +1,98 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify repository
+        run: npm test
+
+      - name: Expand packed game assets
+        run: node unpack.mjs
+
+      - name: Prepare static Pages files
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile, writeFile, access } from 'node:fs/promises';
+          import { gunzipSync } from 'node:zlib';
+          import path from 'node:path';
+
+          const root = path.resolve('web');
+
+          async function exists(file) {
+            try { await access(file); return true; } catch { return false; }
+          }
+
+          async function walk(dir) {
+            const entries = await readdir(dir, { withFileTypes: true });
+            for (const entry of entries) {
+              const file = path.join(dir, entry.name);
+              if (entry.isDirectory()) {
+                await walk(file);
+                continue;
+              }
+
+              // The local Node server transparently exposes *.gz as the
+              // original URL. Pages is static, so materialize that URL.
+              if (file.endsWith('.gz')) {
+                const target = file.slice(0, -3);
+                if (!(await exists(target))) {
+                  await writeFile(target, gunzipSync(await readFile(file)));
+                }
+              }
+
+              // The local server also serves optimized WebP bytes when the
+              // application requests the original texture path (for example
+              // texture.png -> texture.png.webp). Mirror that URL for Pages.
+              if (file.endsWith('.webp')) {
+                const target = file.slice(0, -5);
+                if (!(await exists(target))) {
+                  await writeFile(target, await readFile(file));
+                }
+              }
+            }
+          }
+
+          await walk(root);
+          await writeFile(path.join(root, '.nojekyll'), '');
+          console.log('Prepared static GitHub Pages artifact in web/.');
+          NODE
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
