@@ -34,6 +34,14 @@ The `web` directory contains editable application modules. Binary assets and com
 
 Use `?keyboardOnly` in the URL to ignore a connected controller, for example when another game is using it.
 
+## Troubleshooting
+
+- **The page is blank or models return 404:** start with `npm start` from the complete repository. Opening `web/index.html` directly or serving only `web/` skips the packed-resource and fallback handling. Keep `packed/index.json` and all referenced `.pack` files together.
+- **The default port is busy:** on macOS/Linux use `PORT=4189 npm start`; in PowerShell set `$env:PORT = '4189'` before `npm start`. Then open `http://127.0.0.1:4189/`. The default `HOST` is loopback; change it only when you intend to expose the server beyond this machine.
+- **A controller changes keyboard testing:** add `?keyboardOnly` to the game URL and reload.
+- **An edited packed asset is not visible:** `storage.mjs` prefers a materialized file in `web/` over the packed copy. Check whether an older unpacked file is shadowing the asset you expected to load; back up edits before removing an override.
+- **A direct edit under `docs/` disappears:** that directory is the generated Pages snapshot. Make application edits under `web/`; the workflow replaces `docs/` from prepared source files.
+
 ## Verify
 
 ```sh
