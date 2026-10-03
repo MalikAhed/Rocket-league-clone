@@ -50,4 +50,13 @@ Recovered shader JavaScript and editable application JavaScript are included. Th
 
 Existing third-party licenses and bot notices are preserved in `web/licenses`, `web/physics/THIRD-PARTY-NOTICES.txt`, `web/vendor`, and `web/assets/bot`.
 
+## License
 
+Original contributions by Malik Abuallatta are licensed under the
+[MIT License](LICENSE). Third-party code, adaptations, dependencies, and assets
+retain their existing licenses and notices. This license does not grant new
+rights to third-party material.
+
+Rocket League assets retain their owners’ rights. Bot models, their adapted
+code, and shader adaptations retain the terms in `web/assets/bot/`,
+`web/licenses/`, and the corresponding notices in `docs/`.
